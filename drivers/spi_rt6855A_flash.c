@@ -1586,20 +1586,27 @@ int ralink_spi_command(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		int i;
 
 		o = simple_strtoul(argv[2], NULL, 16);
-		l = strlen(argv[3]) / 2;
-		p = (u8 *)malloc(l);
-		if (!p) {
-			printf("malloc error\n");
-			return 0;
+		p = simple_strtoul(argv[3], NULL, 16);
+		if(argc >= 5) {
+			l = simple_strtoul(argv[4], NULL, 16);
+			printf("write offs 0x%x, from mm: 0x%x, len: 0x%x\n", o, p, l);
+			raspi_write(p, o, l);
+		} else {
+			l = strlen(argv[3]) / 2;
+			p = (u8 *)malloc(l);
+			if (!p) {
+				printf("malloc error\n");
+				return 0;
+			}
+			for (i = 0; i < l; i++) {
+				t[0] = argv[3][2*i];
+				t[1] = argv[3][2*i+1];
+				*(p + i) = simple_strtoul(t, NULL, 16);
+			}
+			printf("write offs 0x%x, len 0x%x\n", o, l);
+			raspi_write(p, o, l);
+			free(p);
 		}
-		for (i = 0; i < l; i++) {
-			t[0] = argv[3][2*i];
-			t[1] = argv[3][2*i+1];
-			*(p + i) = simple_strtoul(t, NULL, 16);
-		}
-		printf("write offs 0x%x, len 0x%x\n", o, l);
-		raspi_write(p, o, l);
-		free(p);
 	}
 	else if (!strncmp(argv[1], "sr", 3)) {
 		u8 sr;
@@ -1637,7 +1644,7 @@ int ralink_spi_command(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 }
 
 U_BOOT_CMD(
-	spi,	4,	1, 	ralink_spi_command,
+	spi,	5,	1, 	ralink_spi_command,
 	"spi	- spi command\n",
 	"spi usage:\n"
 	"  spi id\n"
@@ -1646,6 +1653,7 @@ U_BOOT_CMD(
 	"  spi read <addr> <len>\n"
 	"  spi erase <offs> <len>\n"
 	"  spi write <offs> <hex_str_value>\n"
+	"  spi write <offs> <mem-addr> <len>\n"
 );
 #endif
 #endif // RALINK_CMDLINE //
