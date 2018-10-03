@@ -2883,7 +2883,7 @@ static inline void cal_memset(void* src, unsigned char pat, unsigned int size)
 
 __attribute__((nomips16)) static void inline cal_invalidate_dcache_range(ulong start_addr, ulong stop)
 {
-	unsigned long lsize = CONFIG_SYS_CACHELINE_SIZE;
+	unsigned long lsize = 0x10000;
 	unsigned long addr = start_addr & ~(lsize - 1);
 	unsigned long aend = (stop - 1) & ~(lsize - 1);
 
