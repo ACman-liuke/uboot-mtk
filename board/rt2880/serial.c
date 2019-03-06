@@ -178,9 +178,9 @@ void serial_setbrg (void)
       defined(RT6855_ASIC_BOARD) || defined(RT6855_FPGA_BOARD) || \
       defined(MT7620_ASIC_BOARD) || defined(MT7620_FPGA_BOARD) || \
       defined(MT7628_ASIC_BOARD) || defined(MT7628_FPGA_BOARD)
-	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) |= cpu_to_le32(1<<19|1<<12);
+	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) |= cpu_to_le32(1<<19|1<<20|1<<12);
 	/* RST Control change from W1C to W1W0 to reset, update 20080812 */
-	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) &= ~(1<<19|1<<12);
+	*(unsigned long *)(RALINK_SYSCTL_BASE + 0x0034) &= ~(1<<19|1<<20|1<<12);
 
 #if 0
 	u32 reg;
